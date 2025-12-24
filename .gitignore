@@ -1,0 +1,23 @@
+# Ignorera konfigurationsfiler med känslig information
+config/database.php
+
+# Ignorera uploads
+uploads/*
+!uploads/.gitkeep
+
+# Ignorera IDE-filer
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignorera OS-filer
+.DS_Store
+Thumbs.db
+
+# Ignorera composer
+vendor/
+composer.lock
+
+# Ignorera logs
+*.log
