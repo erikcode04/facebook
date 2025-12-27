@@ -27,6 +27,23 @@ $stmt = $pdo->prepare("SELECT COUNT(*) as post_count FROM posts WHERE user_id = 
 $stmt->execute([$view_user_id]);
 $post_stats = $stmt->fetch();
 
+// Hämta följare-statistik
+$stmt = $pdo->prepare("SELECT COUNT(*) as followers_count FROM follows WHERE following_id = ?");
+$stmt->execute([$view_user_id]);
+$followers = $stmt->fetch();
+
+$stmt = $pdo->prepare("SELECT COUNT(*) as following_count FROM follows WHERE follower_id = ?");
+$stmt->execute([$view_user_id]);
+$following = $stmt->fetch();
+
+// Kontrollera om den inloggade användaren följer denna profil
+$is_following = false;
+if (!$is_own_profile) {
+    $stmt = $pdo->prepare("SELECT id FROM follows WHERE follower_id = ? AND following_id = ?");
+    $stmt->execute([$user_id, $view_user_id]);
+    $is_following = (bool)$stmt->fetch();
+}
+
 // Hantera profiluppdatering
 $update_message = '';
 $update_error = '';
@@ -133,10 +150,25 @@ include 'views/header.php';
                         <span class="stat-number"><?php echo $post_stats['post_count']; ?></span>
                         <span class="stat-label">Inlägg</span>
                     </div>
+                    <div class="stat">
+                        <span class="stat-number" id="followers-count"><?php echo $followers['followers_count']; ?></span>
+                        <span class="stat-label">Följare</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number"><?php echo $following['following_count']; ?></span>
+                        <span class="stat-label">Följer</span>
+                    </div>
                 </div>
 
                 <?php if ($is_own_profile): ?>
                     <button class="edit-profile-btn" onclick="toggleEditProfile()">Redigera profil</button>
+                <?php else: ?>
+                    <button class="follow-btn <?php echo $is_following ? 'following' : ''; ?>"
+                        id="follow-btn"
+                        data-user-id="<?php echo $view_user_id; ?>"
+                        onclick="toggleFollow()">
+                        <?php echo $is_following ? 'Följer' : 'Följ'; ?>
+                    </button>
                 <?php endif; ?>
             </div>
         </div>
@@ -189,6 +221,7 @@ include 'views/header.php';
 <script>
     const profileUserId = <?php echo $view_user_id; ?>;
     const isOwnProfile = <?php echo $is_own_profile ? 'true' : 'false'; ?>;
+    let isFollowing = <?php echo !$is_own_profile && $is_following ? 'true' : 'false'; ?>;
 
     function toggleEditProfile() {
         const bioDisplay = document.getElementById('bio-display');
@@ -200,6 +233,42 @@ include 'views/header.php';
         } else {
             bioDisplay.style.display = 'block';
             bioEdit.style.display = 'none';
+        }
+    }
+
+    async function toggleFollow() {
+        const followBtn = document.getElementById('follow-btn');
+        const action = isFollowing ? 'unfollow' : 'follow';
+
+        try {
+            const response = await fetch(BASE_URL + 'api/follow_user.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: profileUserId,
+                    action: action
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                isFollowing = !isFollowing;
+                followBtn.textContent = isFollowing ? 'Följer' : 'Följ';
+                followBtn.classList.toggle('following', isFollowing);
+
+                // Uppdatera följare-räknare
+                const followersCount = document.getElementById('followers-count');
+                const currentCount = parseInt(followersCount.textContent);
+                followersCount.textContent = isFollowing ? currentCount + 1 : currentCount - 1;
+            } else {
+                alert('Kunde inte uppdatera följ-status: ' + (data.error || 'Okänt fel'));
+            }
+        } catch (error) {
+            console.error('Fel vid följ-åtgärd:', error);
+            alert('Kunde inte uppdatera följ-status');
         }
     }
 

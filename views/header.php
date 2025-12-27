@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/style.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/posts.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/profile.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/search.css">
 </head>
 
 <body>
@@ -20,6 +21,7 @@
                 <li><a href="<?php echo BASE_URL; ?>">Hem</a></li>
                 <?php if (is_logged_in()): ?>
                     <li><a href="<?php echo BASE_URL; ?>posts.php">Inlägg</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>search.php">Sök</a></li>
                     <li><a href="<?php echo BASE_URL; ?>profile.php">Profil</a></li>
                     <li><a href="<?php echo BASE_URL; ?>logout.php">Logga ut</a></li>
                 <?php else: ?>
