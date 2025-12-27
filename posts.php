@@ -37,6 +37,10 @@ include 'views/header.php';
     </div>
 </div>
 
-<script src="<?php echo BASE_URL; ?>public/js/posts.js"></script>
+<script>
+    // Gör BASE_URL tillgänglig för JavaScript
+    const BASE_URL = '<?php echo BASE_URL; ?>';
+</script>
+<script src="<?php echo BASE_URL; ?>public/js/posts.js?v=<?php echo time(); ?>"></script>
 
 <?php include 'views/footer.php'; ?>

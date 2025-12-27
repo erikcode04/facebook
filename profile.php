@@ -208,8 +208,11 @@ include 'views/header.php';
         const messages = document.querySelectorAll('.success-message, .error-message');
         messages.forEach(msg => msg.style.display = 'none');
     }, 3000);
+
+    // Gör BASE_URL tillgänglig för JavaScript
+    const BASE_URL = '<?php echo BASE_URL; ?>';
 </script>
 
-<script src="<?php echo BASE_URL; ?>public/js/profile.js"></script>
+<script src="<?php echo BASE_URL; ?>public/js/profile.js?v=<?php echo time(); ?>"></script>
 
 <?php include 'views/footer.php'; ?>

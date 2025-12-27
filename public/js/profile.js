@@ -75,8 +75,10 @@ async function createPostElement(post) {
     const isLiked = await checkIfLiked(post.id);
 
     // Bygg upp HTML för inlägget
-    const profilePicture = post.profile_picture || 'public/images/default-avatar.png';
-    const postImage = post.image ? `<img src="${escapeHtml(post.image)}" alt="Post image" class="post-image">` : '';
+    const profilePicture = post.profile_picture
+        ? (BASE_URL + post.profile_picture)
+        : (BASE_URL + 'public/images/default-avatar.svg');
+    const postImage = post.image ? `<img src="${escapeHtml(BASE_URL + post.image)}" alt="Post image" class="post-image">` : '';
 
     article.innerHTML = `
         <div class="post-header">
@@ -245,7 +247,9 @@ function createCommentElement(comment) {
     const div = document.createElement('div');
     div.className = 'comment';
 
-    const profilePicture = comment.profile_picture || 'public/images/default-avatar.png';
+    const profilePicture = comment.profile_picture
+        ? (BASE_URL + comment.profile_picture)
+        : (BASE_URL + 'public/images/default-avatar.svg');
     const timestamp = new Date(comment.created_at).toLocaleString('sv-SE');
 
     div.innerHTML = `
