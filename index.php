@@ -26,10 +26,9 @@ echo "<!-- DEBUG: header.php laddad -->\n";
 // Huvudinnehåll
 echo "<!-- DEBUG: Visar huvudinnehåll -->\n";
 ?>
-<main>
-    <h1>Välkommen till Facebook-projektet</h1>
-    <p>Detta är startsidan för ditt projekt.</p>
-    <p><strong>DEBUG:</strong> Om du ser detta meddelande fungerar sidan!</p>
+<main style="text-align: center; padding: 50px;">
+    <h1>Sorry for turning in late</h1>
+    <img src="public/images/bowing-down-bow-down.gif" alt="Bowing down apologetically" style="max-width: 500px; margin: 20px auto; display: block;">
 </main>
 
 <?php
